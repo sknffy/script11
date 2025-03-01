@@ -1,0 +1,83 @@
+stage.set_background_color("yellow")
+board = codesters.Text("Wrong Letters:", -180, 230)
+# Variable for counting questions
+a = 0
+# Variable for counting answers
+b = 0
+# Variable for wrong answers
+wrong_answer = 0
+# Initial position for incorrect letters
+distance_y = 225
+# List of all gallows sprites
+gallows_list = ["Gallows1_f76","Gallows2_020","Gallows3_f07",
+"Gallows4_f5f","Gallows5_55d", "Gallows6_36a", "Gallows7_88e",
+"Gallows8_8b8", "Gallows9_d33","Gallows10_bd3"]
+# List for lines
+lungime = []
+# List for words
+words = []
+# List for the correct word split by letters  
+correct_word = []
+try:
+    choice = stage.ask("How many words do you want to write?", 0, 150)
+    # Loop for entering words as many times as specified
+    while a < int(choice):
+        choice2 = stage.ask("Write a word", 0, 150)
+        # Add words to the list in lowercase
+        words.append(choice2.lower())
+        a += 1
+        
+    # Lines based on a randomly chosen word
+    for i in random.choice(words):
+        lungime.append("_")
+        # Add each letter to the list
+        correct_word.append(i)
+        
+    # Display lines on the screen
+    text = codesters.Text(str(lungime), 0, -200)
+    
+    # Guess letters until the correct answer
+    while b < len(lungime):
+        choice = stage.ask("Write a letter", 0, 150)
+        # Check if the letter is in the word
+        if choice.lower() in correct_word:
+            # Add it to all the places where this letter exists
+            for i in range(len(correct_word)):
+                if choice.lower() == correct_word[i]:
+                    lungime[i] = choice.lower()
+            # Update the lines
+            stage.remove_sprite(text)
+            text = codesters.Text(str(lungime), 0, -200)
+            # Check for victory
+            if lungime == correct_word:
+                text = codesters.Text("You Win!!!", 0, 190, "green")
+                text.set_size(3)
+                b = len(lungime)
+            b += 1
+        else:
+            # If an incorrect letter is entered
+            wrong_answer += 1
+            if wrong_answer < 10:
+                distance_y -= 35
+                # Display this letter on the stage
+                wrong_letters = codesters.Text(str(choice.lower()), -180, distance_y, "red")
+                wrong_letters.set_size(2)
+                # Draw the gallows step by step
+                gallows = codesters.Sprite(gallows_list[wrong_answer - 1])
+            elif wrong_answer == 10:
+                gallows = codesters.Sprite(gallows_list[wrong_answer - 1])
+                stage.wait(2)
+                gallows = codesters.Sprite("GallowsFinal_8bd")
+                text = codesters.Text("You Died!!!", 0, 190, "red")
+                text.set_size(3)
+                # Stop the loop
+                b = len(lungime)
+# Checking for incorrect input
+except:
+    codesters.Text("Bad Input, try again!!!", 0, 0, "black").set_size(2)
+    stage.remove_all_events()
+
+
+
+
+
